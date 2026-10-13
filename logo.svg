@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="420" height="420" viewBox="0 0 420 420" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+  <g id="rv">
+    <path d="M0 22 H150 Q170 22 176 40 L186 64 V96 H0Z" fill="#fff"/>
+    <path d="M0 0 H124 Q138 0 140 22 H0Z" fill="#fff"/>
+    <rect x="0" y="54" width="186" height="9" fill="#ff6b3d"/>
+    <rect x="18" y="28" width="38" height="20" rx="3" fill="#2d3a4f"/>
+    <rect x="66" y="28" width="38" height="20" rx="3" fill="#2d3a4f"/>
+    <path d="M150 30 H164 L176 52 H150Z" fill="#2d3a4f"/>
+    <circle cx="40" cy="96" r="16" fill="#1e1e28"/><circle cx="40" cy="96" r="6" fill="#ccc"/>
+    <circle cx="148" cy="96" r="16" fill="#1e1e28"/><circle cx="148" cy="96" r="6" fill="#ccc"/>
+  </g>
+  <g id="palm">
+    <path d="M8 110 Q16 50 0 0" stroke="#24543a" stroke-width="9" fill="none"/>
+    <path d="M0 0 Q-32 -20 -60 -4 Q-27 -10 0 2Z M0 0 Q28 -30 58 -18 Q28 -12 0 2Z M0 0 Q-22 -40 -46 -40 Q-17 -25 0 2Z M0 0 Q23 -42 50 -50 Q23 -28 0 2Z" fill="#24543a"/>
+  </g>
+  <path id="top" d="M40 210 A170 170 0 0 1 380 210"/>
+  <path id="bot" d="M48 210 A162 162 0 0 0 372 210"/>
+  <clipPath id="k"><circle cx="210" cy="210" r="150"/></clipPath>
+<clipPath id="k6"><circle cx="210" cy="210" r="150"/></clipPath></defs>
+  <circle cx="210" cy="210" r="205" fill="#0b4f66"/><circle cx="210" cy="210" r="153" fill="#fff"/>
+  <g clip-path="url(#k6)">
+    <rect width="420" height="420" fill="#d6f1fb"/><circle cx="250" cy="150" r="40" fill="#ffd25a"/>
+    <path d="M40 260 L120 140 L165 200 L205 150 L270 260Z" fill="#6c8aa6"/>
+    <path d="M120 140 L140 170 L128 166 L118 178 L104 164Z M205 150 L222 176 L208 172 L198 180 L192 168Z" fill="#fff"/>
+    <rect y="232" width="420" height="40" fill="#1f93c4"/>
+    <path d="M220 246 q15 -6 30 0 t30 0 t30 0 t30 0" stroke="#fff" stroke-width="4" fill="none" opacity=".8"/>
+    <rect y="268" width="420" height="200" fill="#f2c27b"/>
+    <path d="M60 420 Q170 320 260 290 L300 290 Q230 330 190 420Z" fill="#2d3a4f"/>
+    <path d="M300 236 h50 l-8 10 h-34z" fill="#2d3a4f"/><path d="M324 234 V180 L352 230Z" fill="#fff"/><path d="M320 234 V192 L300 230Z" fill="#ff6b3d"/>
+    <use xlink:href="#rv" transform="translate(150 230) scale(.62)"/>
+  </g>
+  <text font-size="38" font-weight="800" fill="#fff" letter-spacing="4"><textPath xlink:href="#top" startOffset="50%" text-anchor="middle">ЮЛЯ И ДИМА</textPath></text>
+  <text font-size="18" font-weight="700" fill="#ffd25a" letter-spacing="5"><textPath xlink:href="#bot" startOffset="50%" text-anchor="middle" dominant-baseline="hanging">• МОРЕ · ГОРЫ · ДОРОГА •</textPath></text>
+</svg>
