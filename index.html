@@ -164,7 +164,7 @@ function filtered(){
 
 function chips(){
   const cnt = {}; D.forEach(p => cnt[p.страна] = (cnt[p.страна]||0)+1);
-  const cs = [['', 'Все страны', D.length], ...Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([k,n]) => [k,k,n])];
+  const cs = [['', 'Все страны', Object.keys(cnt).length], ...Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([k,n]) => [k,k,n])];
   $('countries').innerHTML = cs.map(([k,l,n]) => `<button class="chip" data-c="${esc(k)}" aria-pressed="${S.country===k}">${esc(l)} <small>${n}</small></button>`).join('');
   const base = D.filter(p => !S.country || p.страна === S.country), tc_ = {};
   base.forEach(p => tc_[p.тип] = (tc_[p.тип]||0)+1);
@@ -262,7 +262,7 @@ function render(){
   if (!S.sel || !F.includes(S.sel)) S.sel = F[0] || null;
   document.querySelectorAll('.item').forEach(b => b.setAttribute('aria-current', String(+b.dataset.i === S.sel?.i)));
   chips(); schema(F); card();
-  $('draftinfo').textContent = `${D.length} мест из ${Object.keys(videos).length} роликов, ${new Set(D.map(p=>p.страна)).size} страны.`;
+  $('draftinfo').textContent = `${D.length} мест из ${Object.keys(videos).length} роликов, ${(n=>n+' '+(n%10==1&&n%100!=11?'страна':n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'страны':'стран'))(new Set(D.map(p=>p.страна)).size)}.`;
 }
 function pick(p){ S.sel = p; if (S.country && p.страна !== S.country && !S.video) S.country = p.страна;
   render(); try { history.replaceState(null,'','#'+p.якорь); } catch(e){}
