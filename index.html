@@ -233,12 +233,12 @@ function list(){
   }
   $('list').innerHTML = h;
   const vf = $('vidfilter');
-  const kmlBtn = `<button class="chip" id="savekml">⬇ Сохранить эти ${F.filter(p=>p.lat).length} мест себе (KML)</button>`;
+  const kmlBtn = '';   // сохранение мест себе убрано по просьбе (08.11)
   if (S.video){ const v = videos[S.video]; vf.hidden = false;
     vf.innerHTML = `<span>Все места из ролика <b>«${esc(v.название)}»</b> — ${v.места.length}</span><button class="chip" id="clearvid">Показать все места ×</button>${kmlBtn}`; }
   else if (S.city){ vf.hidden = false;
     vf.innerHTML = `<span>Город <b>${esc(S.city)}</b> — ${F.length}</span><button class="chip" id="clearcity">Все места ×</button>${kmlBtn}`; }
-  else { vf.hidden = false; vf.innerHTML = kmlBtn; }
+  else vf.hidden = true;
   return F;
 }
 
@@ -345,12 +345,6 @@ function routePts(){ return D.filter(p => p.автодом && p.lat).map(p => { 
 function routeKm(){ const r = routePts(); let s = 0; for (let i = 1; i < r.length; i++) s += km(r[i-1], r[i]); return s; }
 function setTab(t){ document.body.dataset.tab = t; document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === t)));
   if (t === 'map' && window.LM) setTimeout(() => LM.invalidateSize(), 50); }
-function saveKml(F){
-  const body = F.filter(p => p.lat).map(p => `<Placemark><name>${esc(p.название)}</name><description>${esc(((RATE[p.оценка]||[])[1]||'')+' '+(p.отзыв||'').slice(0,300)+' https://yulya-dima.github.io/atlas/m/'+p.якорь+'.html')}</description><Point><coordinates>${p.lng},${p.lat}</coordinates></Point></Placemark>`).join('');
-  const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Места Юли и Димы</name>${body}</Document></kml>`], {type:'application/vnd.google-earth.kml+xml'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'mesta-yulya-dima.kml'; a.click();
-  alert('Файл скачан. Google: «Мои карты» (google.com/maps/d) → Создать карту → Импорт. Яндекс: Конструктор карт → Импорт.');
-}
 function pick(p){ S.sel = p; if (S.country && p.страна !== S.country && !S.video) S.country = p.страна;
   render(); try { history.replaceState(null,'','#'+p.якорь); } catch(e){}
   if (matchMedia('(max-width:860px)').matches){ setTab('map'); $('card').scrollIntoView({behavior:'smooth', block:'start'}); } }
@@ -359,7 +353,6 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-i],[data-c],[data-f],[data-t],[data-l],[data-v],[data-col],[data-tab],#clearvid,#clearcity,#savekml,#nearme'); if (!t) return;
   if (t.id === 'clearvid'){ S.video = ''; render(); return; }
   if (t.id === 'clearcity'){ S.city = ''; render(); return; }
-  if (t.id === 'savekml'){ saveKml(filtered()); return; }
   if (t.id === 'nearme'){ if (S.near){ S.near = null; render(); return; }
     if (!navigator.geolocation){ alert('Телефон не даёт геолокацию'); return; }
     navigator.geolocation.getCurrentPosition(pos => { S.near = {lat:pos.coords.latitude, lng:pos.coords.longitude}; S.country = ''; S.city = ''; render(); },
