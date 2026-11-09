@@ -387,7 +387,7 @@ document.addEventListener('click', e => {
     navigator.geolocation.getCurrentPosition(pos => { S.near = {lat:pos.coords.latitude, lng:pos.coords.longitude}; S.country = ''; S.city = ''; render(); },
       () => alert('Разрешите доступ к местоположению, чтобы показать места рядом')); return; }
   if (t.dataset.col !== undefined){ S.col = S.col === t.dataset.col ? '' : t.dataset.col; if (S.col === 'автодом') S.country = ''; render(); return; }
-  if (t.dataset.tab){ setTab(t.dataset.tab); window.scrollTo(0, 0); return; }
+  if (t.dataset.tab){ setTab(t.dataset.tab); return; }
   if (t.dataset.v){ S.video = t.dataset.v; S.country = ''; S.folder = ''; S.type = ''; S.q = ''; $('q').value = ''; render(); try{history.replaceState(null,'','#v-'+S.video)}catch(e){}; return; }
   if (t.dataset.c !== undefined){ S.country = t.dataset.c; S.city = ''; S.town = ''; S.folder = ''; S.type = ''; S.video = ''; render(); return; }
   if (t.dataset.w !== undefined){ S.town = t.dataset.w; S.folder = ''; S.type = ''; S.sel = null; render(); return; }
