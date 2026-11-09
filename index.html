@@ -283,7 +283,7 @@ function schema(F){
   pts.forEach(p=>{ const on=p===sel;
     const m=L.circleMarker([p.lat,p.lng],{radius:on?10:7,color:'#fff',weight:2,fillOpacity:1,
       fillColor:on?css.getPropertyValue('--ink'):(p.примерно?'#9AA8A2':css.getPropertyValue('--saffron'))});
-    m.bindTooltip(p.название); m.on('click',()=>pick(p)); LG.addLayer(m); });
+    m.bindTooltip(p.название); m.on('click',()=>pick(p,true)); LG.addLayer(m); });
   LG.addTo(LM);
   if(LR){LR.remove();LR=null;}
   if(S.col==='автодом'){ const r=routePts(); LR=L.polyline(r.map(p=>[p.lat,p.lng]),{color:css.getPropertyValue('--jade'),weight:3,opacity:.8,dashArray:'6 6'}).addTo(LM); }
@@ -371,10 +371,10 @@ function routePts(){ return D.filter(p => p.автодом && p.lat).map(p => { 
 function routeKm(){ const r = routePts(); let s = 0; for (let i = 1; i < r.length; i++) s += km(r[i-1], r[i]); return s; }
 function setTab(t){ document.body.dataset.tab = t; document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === t)));
   if (t === 'map' && window.LM) setTimeout(() => LM.invalidateSize(), 50); }
-function pick(p){ S.sel = p; if (S.country && p.страна !== S.country && !S.video) S.country = p.страна;
+function pick(p, fromMap){ S.sel = p; if (S.country && p.страна !== S.country && !S.video) S.country = p.страна;
   render(); try { history.replaceState(null,'','#'+p.якорь); } catch(e){}
   try { window.ym && ym(114131930, 'hit', location.href, {title: p.название + ' — Атлас мест'}); } catch(e){}
-  if (matchMedia('(max-width:860px)').matches){ setTab('map'); $('card').scrollIntoView({behavior:'smooth', block:'start'}); } }
+  if (!fromMap && matchMedia('(max-width:860px)').matches){ setTab('map'); $('card').scrollIntoView({behavior:'smooth', block:'start'}); } }
 
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-i],[data-c],[data-g],[data-w],[data-f],[data-t],[data-l],[data-v],[data-col],[data-tab],[data-sort],#clearvid,#clearnopt,#clearcity,#savekml,#nearme'); if (!t) return;
