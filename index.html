@@ -105,6 +105,7 @@ h2{font:700 clamp(20px,2.6vw,28px)/1.15 var(--f-display);margin:0;text-wrap:bala
 .subscribe{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:14px;font-size:14px;color:var(--muted)}
 button.linkbtn{background:none;border:0;padding:0;color:var(--jade);text-decoration:underline;cursor:pointer;font:inherit}
 #cities{display:none}
+.locate-ctl{width:30px;height:30px;line-height:30px;text-align:center;font-size:15px;text-decoration:none;background:var(--paper);color:var(--ink)}
 footer{color:var(--muted);font-size:13px;max-width:80ch}
 .stats{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted)}
 .stats b{display:block;font:700 22px/1.1 var(--f-display);color:var(--ink)}
@@ -156,7 +157,7 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
     <div class="list" id="list" aria-label="Места"></div>
     <div class="side">
       <figure class="map" style="margin:0">
-        <div class="maphead"><span id="maptitle"></span><span><button class="linkbtn" id="locme">📍 Где я</button></span></div>
+        <div class="maphead"><span id="maptitle"></span><span></span></div>
         <div id="lmap" style="height:440px" role="region" aria-label="Карта мест"></div>
       </figure>
       <article class="card" id="card" aria-live="polite"></article>
@@ -276,7 +277,9 @@ function schema(F){
   const nb=$('nopt'); if(nb) nb.onclick=()=>{S.nopt=1; S.sel=null; render(); const b=document.querySelector('[data-tab=list]'); if(b) b.click();};
   if(!window.L){ $('lmap').textContent='Карта не загрузилась — места есть в списке слева.'; return; }
   if(!LM){ LM=L.map('lmap',{scrollWheelZoom:false});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© участники OpenStreetMap'}).addTo(LM); }
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© участники OpenStreetMap'}).addTo(LM);
+    const LC=L.control({position:'topleft'}); LC.onAdd=()=>{const b=L.DomUtil.create('a','locate-ctl leaflet-bar'); b.href='#'; b.title='Где я'; b.setAttribute('aria-label','Где я'); b.textContent='📍';
+      L.DomEvent.on(b,'click',e=>{L.DomEvent.stop(e); document.getElementById('nearme')?.click();}); return b;}; LC.addTo(LM); }
   if(LG) LG.remove();
   LG = L.markerClusterGroup ? L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:40}) : L.layerGroup();
   const css=getComputedStyle(document.documentElement);
