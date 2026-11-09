@@ -156,7 +156,7 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
     <div class="list" id="list" aria-label="Места"></div>
     <div class="side">
       <figure class="map" style="margin:0">
-        <div class="maphead"><span id="maptitle"></span><span>● место &nbsp; ● серым — точка примерная</span></div>
+        <div class="maphead"><span id="maptitle"></span><span><button class="linkbtn" id="locme">📍 Где я</button></span></div>
         <div id="lmap" style="height:440px" role="region" aria-label="Карта мест"></div>
       </figure>
       <article class="card" id="card" aria-live="polite"></article>
@@ -377,12 +377,12 @@ function pick(p, fromMap){ S.sel = p; if (S.country && p.страна !== S.coun
   if (!fromMap && matchMedia('(max-width:860px)').matches){ setTab('map'); $('card').scrollIntoView({behavior:'smooth', block:'start'}); } }
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-i],[data-c],[data-g],[data-w],[data-f],[data-t],[data-l],[data-v],[data-col],[data-tab],[data-sort],#clearvid,#clearnopt,#clearcity,#savekml,#nearme'); if (!t) return;
+  const t = e.target.closest('[data-i],[data-c],[data-g],[data-w],[data-f],[data-t],[data-l],[data-v],[data-col],[data-tab],[data-sort],#clearvid,#clearnopt,#clearcity,#savekml,#nearme,#locme'); if (!t) return;
   if (t.dataset.sort){ S.sort = t.dataset.sort; S.near = null; render(); return; }
   if (t.id === 'clearnopt'){ S.nopt = 0; render(); return; }
   if (t.id === 'clearvid'){ S.video = ''; render(); return; }
   if (t.id === 'clearcity'){ S.city = ''; S.town = ''; render(); return; }
-  if (t.id === 'nearme'){ if (S.near){ S.near = null; S.sort = 'abc'; render(); return; }
+  if (t.id === 'nearme' || t.id === 'locme'){ if (S.near){ S.near = null; S.sort = 'abc'; render(); return; }
     if (!navigator.geolocation){ alert('Телефон не даёт геолокацию'); return; }
     navigator.geolocation.getCurrentPosition(pos => { S.near = {lat:pos.coords.latitude, lng:pos.coords.longitude}; S.country = ''; S.city = ''; render(); },
       () => alert('Разрешите доступ к местоположению, чтобы показать места рядом')); return; }
