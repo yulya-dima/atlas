@@ -539,6 +539,7 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
 (function(){
   const лучший = ps => ps.slice().sort((a,b)=>((b.балл||0)-(a.балл||0)) || ((b.кадр?1:0)-(a.кадр?1:0)))[0];
   // самые красивые фото для плашек выбрала нейросеть (выбор-фото.py → выбор-фото.json)
+  const ПЛ = /*ПЛАШКИ*/{"с:Таиланд": "p/plyazh-rayonga_1.jpg", "г:Паттайя": "p/gora-khao-chi-chan_1.jpg", "г:Районг": "p/rybatskaya-derevnya-rayong_1.jpg", "с:Россия": "p/baykal_3.jpg", "г:Бангкок": "p/mahanakhon_1.jpg", "г:Иркутская область": "p/baykal_2.jpg", "г:Култук": "p/baykal_2.jpg", "с:Азербайджан": "p/denis-mol_1.jpg", "г:Баку и Абшерон": "p/plamennye-bashni_1.jpg", "г:Баку": "p/plamennye-bashni_1.jpg", "г:Си-Рача": "p/hram-sanchaunadzha_0.jpg", "г:Аюттхая": "p/chayram_0.jpg", "г:Акташ": "p/chernoe-ozero_3.jpg", "г:Чемал": "p/smotrovaya-tolgoek-i-kacheli-nad-katunyu_1.jpg", "с:Китай": "p/huafu_1.jpg", "г:Хэйхэ": "p/gorodskoy-park_3.jpg", "г:Абшерон": "p/rozovoe-ozero-masazyr_1.jpg", "г:Бурятия": "p/goryachiy-istochnik-ilinka_3.jpg", "г:Ильинка": "p/goryachiy-istochnik-ilinka_2.jpg", "г:Ко Куд": "p/sekret-bich_3.jpg", "г:Улан-Удэ": "p/goryachiy-basseyn_2.jpg", "г:Находка": "p/tri-ozerya_0.jpg", "г:Иня": "p/sliyanie-chui-i-katuni_2.jpg", "г:Алтай": "p/sliyanie-chui-i-katuni_2.jpg"}/*/ПЛАШКИ*/;
   const ВЫБОР = /*ВЫБОР-ФОТО*/{"с:Таиланд": "plyazh-rayonga", "г:Паттайя": "gora-khao-chi-chan", "г:Районг": "ozero-s-lotosami-rayong", "с:Россия": "oroktoyskiy-most", "г:Новосибирск": "restoran-hochu-puri", "г:Бангкок": "park-lyumpini", "г:Байкал (Иркутская область)": "baykal", "с:Азербайджан": "bakinskiy-bulvar", "г:Баку и Абшерон": "bakinskiy-bulvar", "г:Си-Рача": "smotrovaya-khao-phra-khru", "г:Приморье": "buhta-lashkevicha", "г:Чита": "kafe-mayak", "г:Аюттхая": "vat-yay-chay-mongkhon", "г:Амурская область": "poyuschiy-fontan", "г:Горный Алтай": "sliyanie-chui-i-katuni", "г:Чианг Май": "fruktovyy-sad", "с:Вьетнам": "plyazh-s-samoletami", "г:Фукуок": "sunset-town", "с:Китай": "gorodskoy-park", "г:Хэйхэ": "gorodskoy-park", "г:Ко Чанг, Ко Куд и Трат": "smotrovaya-ploschadka-k-by-point", "г:Бурятия": "ulanude", "г:Москва и область": "kitaygorod", "г:Хабаровск": "habarovsk", "г:Другие места": "tri-ozerya", "г:Красноярск": "krasnoyarsk", "г:Биробиджан": "kafe-u-kolyana", "г:Великий Устюг": "velikiy-ustyug"}/*/ВЫБОР-ФОТО*/;
   const выбранное = (k, пп) => (ВЫБОР[k] && byAnchor[ВЫБОР[k]]) || лучший(пп);
   const фото = p => !p ? '' : p.кадр ? `k/${p.якорь}.jpg` : (p.видео && p.видео[0] ? `https://i.ytimg.com/vi/${p.видео[0].id}/hqdefault.jpg` : '');
@@ -551,7 +552,7 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
   function плашкиСтран(){
     const страны = [...new Set(D.map(p=>p.страна))].map(c => { const пп = D.filter(p=>p.страна===c); return {c, n: пп.length, top: выбранное('с:' + c, пп)}; })
       .sort((a,b)=>b.n-a.n);
-    $('countryPlates').innerHTML = страны.map(x => `<button class="plate${S.country===x.c?' on':''}" data-c="${esc(x.c)}" aria-pressed="${S.country===x.c}"><img loading="lazy" src="${esc(фото(x.top))}" alt=""><span><b>${esc(x.c)}</b><small>${x.n} мест</small></span></button>`).join('');
+    $('countryPlates').innerHTML = страны.map(x => `<button class="plate${S.country===x.c?' on':''}" data-c="${esc(x.c)}" aria-pressed="${S.country===x.c}"><img loading="lazy" src="${esc(ПЛ['с:'+x.c]||фото(x.top))}" alt=""><span><b>${esc(x.c)}</b><small>${x.n} мест</small></span></button>`).join('');
   }
   function плашкиГородов(){
     // сначала страна, потом её города: пока страна не выбрана, городов не показываем
@@ -564,12 +565,12 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
       const гг = Object.entries(м).map(([имя, пп]) => ({имя, n: пп.length, top: выбранное('г:' + имя, пп)})).sort((a,b) => a.имя.localeCompare(b.имя,'ru'));
       if (гг.length > 1){
         $('cityHead').textContent = 'Города: ' + S.city;
-        $('cityPlates').innerHTML = гг.map(c => `<button class="plate${S.town===c.имя?' on':''}" data-w="${esc(c.имя)}" aria-pressed="${S.town===c.имя}"><img loading="lazy" src="${esc(фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
+        $('cityPlates').innerHTML = гг.map(c => `<button class="plate${S.town===c.имя?' on':''}" data-w="${esc(c.имя)}" aria-pressed="${S.town===c.имя}"><img loading="lazy" src="${esc(ПЛ['г:'+c.имя]||фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
           + `<button class="plate back" data-g=""><span><b>← Все регионы</b></span></button>`;
         return;
       }
     }
-    $('cityPlates').innerHTML = видимые.map(c => `<button class="plate${S.city===c.имя?' on':''}" data-g="${esc(c.имя)}" aria-pressed="${S.city===c.имя}"><img loading="lazy" src="${esc(фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
+    $('cityPlates').innerHTML = видимые.map(c => `<button class="plate${S.city===c.имя?' on':''}" data-g="${esc(c.имя)}" aria-pressed="${S.city===c.имя}"><img loading="lazy" src="${esc(ПЛ['г:'+c.имя]||фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
       + (S.country ? `<button class="plate back" data-c=""><span><b>← Все страны</b></span></button>` : '');
   }
   const обновить = () => { плашкиСтран(); плашкиГородов(); };
