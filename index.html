@@ -164,9 +164,11 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
 /* правка 2: плашки поменьше, выбранная страна/город, старые чипы скрыты */
-.plates.sm{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
-.plates.sm .plate{border-radius:12px;aspect-ratio:4/3}
-.plates.sm .plate b{font-size:13px}
+.plates.sm{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.plates.sm .plate{border-radius:14px;aspect-ratio:4/3;box-shadow:0 4px 14px #0b1f1c33}
+.plates.sm .plate img{filter:saturate(1.15) contrast(1.05)}
+.plates.sm .plate::after{background:linear-gradient(180deg,#0000 45%,#0b1f1ccc)}
+.plates.sm .plate b{font-size:14px;text-shadow:0 1px 6px #000a}
 .plates.sm .plate small{font-size:11px}
 .plates.sm .plate span{left:8px;right:8px;bottom:7px}
 .plate.on{box-shadow:0 0 0 3px var(--saffron)}
@@ -215,6 +217,7 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
 
 /* плашка «Тук-туки в Паттайе» — ведёт на карту маршрутов tuktuk/ */
 #transport{margin-top:14px}
+#transport[hidden]{display:none}
 .tukplate{grid-column:span 2;aspect-ratio:16/8;border:0;text-decoration:none}
 .tukplate .tukbadge{position:absolute;left:10px;top:10px;width:44px;height:44px;border-radius:50%;background:#fffffff2;padding:4px;z-index:2;box-shadow:0 4px 12px #0006;animation:badgeIn .7s cubic-bezier(.2,.8,.2,1) both}
 .tukplate span{gap:2px}
@@ -234,12 +237,11 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
       <span class="kick">Юля и Дима · БЕЗ ТОРМОЗОВ</span>
       <h1>Атлас мест</h1>
       <p>Все места, где мы побывали: наш отзыв, цены на момент съёмки и нужная минута в ролике.</p>
-      <div class="hero-cta"><a class="btn-hero" href="#tools">Найти место</a><a class="btn-hero ghost" href="#plates">Выбрать город</a></div>
+      <div class="hero-cta"><a class="btn-hero" href="#tools">Найти место</a><a class="btn-hero ghost" href="#plates">Выбрать страну</a></div>
       <div class="hero-count">
         <span><b data-h="places">0</b>мест</span>
         <span><b data-h="countries">0</b>стран</span>
         <span><b data-h="videos">0</b>роликов</span>
-        <span><b data-h="km">0</b>км на автодоме</span>
       </div>
     </div>
   </section>
@@ -483,7 +485,7 @@ function render(){
   $('stats').innerHTML = `<span><b>${new Set(D.map(p=>p.страна)).size}</b>стран</span>
     <span><b>${new Set(D.filter(p=>p.гор).map(p=>p.страна+p.гор)).size}</b>городов</span><span><b>${D.length}</b>мест</span>
     <span><b>${Object.keys(videos).length}</b>роликов</span><span><b>${D.filter(p=>p.оценка==='советуем').length}</b>советуем</span>
-    ${autoKm?`<span><b>≈${autoKm.toLocaleString('ru')} км</b>на автодоме между точками</span>`:''}`;
+`;
   $('cities').innerHTML = '<span class="by">Города:</span> ' + CITIES.map(c => `<a href="g/${c.слаг}.html">${esc(c.имя)} <small>${c.n}</small></a>`).join('');
   $('draftinfo').textContent = `${D.length} мест из ${Object.keys(videos).length} роликов, ${(n=>n+' '+(n%10==1&&n%100!=11?'страна':n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'страны':'стран'))(new Set(D.map(p=>p.страна)).size)}.`;
 }
@@ -536,22 +538,26 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
 /* ---- правка 2 (13.11): страны → города → места ---- */
 (function(){
   const лучший = ps => ps.slice().sort((a,b)=>((b.балл||0)-(a.балл||0)) || ((b.кадр?1:0)-(a.кадр?1:0)))[0];
+  // самые красивые фото для плашек выбрала нейросеть (выбор-фото.py → выбор-фото.json)
+  const ВЫБОР = /*ВЫБОР-ФОТО*/{"с:Таиланд": "plyazh-rayonga", "г:Паттайя": "gora-khao-chi-chan", "г:Районг": "ozero-s-lotosami-rayong", "с:Россия": "oroktoyskiy-most", "г:Новосибирск": "restoran-hochu-puri", "г:Бангкок": "park-lyumpini", "г:Байкал (Иркутская область)": "baykal", "с:Азербайджан": "bakinskiy-bulvar", "г:Баку и Абшерон": "bakinskiy-bulvar", "г:Си-Рача": "smotrovaya-khao-phra-khru", "г:Приморье": "buhta-lashkevicha", "г:Чита": "kafe-mayak", "г:Аюттхая": "vat-yay-chay-mongkhon", "г:Амурская область": "poyuschiy-fontan", "г:Горный Алтай": "sliyanie-chui-i-katuni", "г:Чианг Май": "fruktovyy-sad", "с:Вьетнам": "plyazh-s-samoletami", "г:Фукуок": "sunset-town", "с:Китай": "gorodskoy-park", "г:Хэйхэ": "gorodskoy-park", "г:Ко Чанг, Ко Куд и Трат": "smotrovaya-ploschadka-k-by-point", "г:Бурятия": "ulanude", "г:Москва и область": "kitaygorod", "г:Хабаровск": "habarovsk", "г:Другие места": "tri-ozerya", "г:Красноярск": "krasnoyarsk", "г:Биробиджан": "kafe-u-kolyana", "г:Великий Устюг": "velikiy-ustyug"}/*/ВЫБОР-ФОТО*/;
+  const выбранное = (k, пп) => (ВЫБОР[k] && byAnchor[ВЫБОР[k]]) || лучший(пп);
   const фото = p => !p ? '' : p.кадр ? `k/${p.якорь}.jpg` : (p.видео && p.видео[0] ? `https://i.ytimg.com/vi/${p.видео[0].id}/hqdefault.jpg` : '');
   const группы = страна => {
     const м = {};
     D.filter(p => !страна || p.страна === страна).forEach(p => { const к = p.рег || 'Другие места'; (м[к] ||= []).push(p); });
-    return Object.entries(м).map(([имя, пп]) => ({имя, n: пп.length, top: лучший(пп)}))
+    return Object.entries(м).map(([имя, пп]) => ({имя, n: пп.length, top: выбранное('г:' + имя, пп)}))
       .sort((a,b) => (a.имя==='Другие места')-(b.имя==='Другие места') || b.n-a.n);
   };
   function плашкиСтран(){
-    const страны = [...new Set(D.map(p=>p.страна))].map(c => { const пп = D.filter(p=>p.страна===c); return {c, n: пп.length, top: лучший(пп)}; })
+    const страны = [...new Set(D.map(p=>p.страна))].map(c => { const пп = D.filter(p=>p.страна===c); return {c, n: пп.length, top: выбранное('с:' + c, пп)}; })
       .sort((a,b)=>b.n-a.n);
     $('countryPlates').innerHTML = страны.map(x => `<button class="plate${S.country===x.c?' on':''}" data-c="${esc(x.c)}" aria-pressed="${S.country===x.c}"><img loading="lazy" src="${esc(фото(x.top))}" alt=""><span><b>${esc(x.c)}</b><small>${x.n} мест</small></span></button>`).join('');
   }
   function плашкиГородов(){
-    $('cityHead').textContent = S.country ? 'Где мы были: ' + S.country : 'Крупнейшие места по городам';
+    // сначала страна, потом её города: пока страна не выбрана, городов не показываем
+    $('cityHead').textContent = S.country ? 'Города: ' + S.country : 'Города — сначала выберите страну';
     const все = группы(S.country);
-    const видимые = S.country ? все : все.slice(0, 12);
+    const видимые = S.country ? все : [];
     $('cityPlates').innerHTML = видимые.map(c => `<button class="plate${S.city===c.имя?' on':''}" data-g="${esc(c.имя)}" aria-pressed="${S.city===c.имя}"><img loading="lazy" src="${esc(фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
       + (S.country ? `<button class="plate back" data-c=""><span><b>← Все страны</b></span></button>` : '');
   }
@@ -600,6 +606,12 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
       </a>
     </div>
   </section>`);
+  // «Транспорт» показываем только внутри Таиланда, под его городами
+  const tr = document.getElementById('transport');
+  const показать = () => { tr.hidden = S.country !== 'Таиланд'; };
+  const прежний = render;
+  render = function(){ прежний(); показать(); };
+  показать();
 })();
 </script>
 </body></html>
