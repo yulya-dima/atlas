@@ -338,12 +338,12 @@ function chips(){
   const cs = [['', 'Все страны', Object.keys(cnt).length], ...Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([k,n]) => [k,k,n])];
   $('countries').innerHTML = cs.map(([k,l,n]) => `<button class="chip" data-c="${esc(k)}" aria-pressed="${S.country===k}">${esc(l)} <small>${n}</small></button>`).join('');
   const gc = {}; D.filter(p => S.country && p.страна === S.country).forEach(p => { const g = p.рег || 'Другие места'; gc[g] = (gc[g]||0)+1; });
-  const gs = Object.entries(gc).sort((a,b) => (a[0]==='Другие места')-(b[0]==='Другие места') || b[1]-a[1]);
+  const gs = Object.entries(gc).sort((a,b) => (a[0]==='Другие места')-(b[0]==='Другие места') || a[0].localeCompare(b[0],"ru"));
   $('citychips').hidden = !S.country;
   $('citychips').innerHTML = '<span class="by">Города:</span> ' + [['', Object.values(gc).reduce((a,b)=>a+b,0)], ...gs]
     .map(([k,n]) => `<button class="chip" data-g="${esc(k)}" aria-pressed="${(S.city||'')===k}">${esc(k||'Все города')} <small>${n}</small></button>`).join('');
   const tw = {}; D.filter(p => S.city && p.страна === S.country && (p.рег || 'Другие места') === S.city && p.пункт).forEach(p => tw[p.пункт] = (tw[p.пункт]||0)+1);
-  const tws = Object.entries(tw).sort((a,b) => b[1]-a[1]);
+  const tws = Object.entries(tw).sort((a,b) => a[0].localeCompare(b[0],"ru"));
   $('towns').hidden = tws.length < 2;
   $('towns').innerHTML = '<span class="by">Где именно:</span> ' + [['', tws.reduce((a,x)=>a+x[1],0)], ...tws]
     .map(([k,n]) => `<button class="chip" data-w="${esc(k)}" aria-pressed="${(S.town||'')===k}">${esc(k||'Все')} <small>${n}</small></button>`).join('');
@@ -546,7 +546,7 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
     const м = {};
     D.filter(p => !страна || p.страна === страна).forEach(p => { const к = p.рег || 'Другие места'; (м[к] ||= []).push(p); });
     return Object.entries(м).map(([имя, пп]) => ({имя, n: пп.length, top: выбранное('г:' + имя, пп)}))
-      .sort((a,b) => (a.имя==='Другие места')-(b.имя==='Другие места') || b.n-a.n);
+      .sort((a,b) => (a.имя==='Другие места')-(b.имя==='Другие места') || a.имя.localeCompare(b.имя,"ru"));
   };
   function плашкиСтран(){
     const страны = [...new Set(D.map(p=>p.страна))].map(c => { const пп = D.filter(p=>p.страна===c); return {c, n: пп.length, top: выбранное('с:' + c, пп)}; })
