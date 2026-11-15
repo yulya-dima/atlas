@@ -169,8 +169,7 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
 .plates.sm .plate b{font-size:13px}
 .plates.sm .plate small{font-size:11px}
 .plates.sm .plate span{left:8px;right:8px;bottom:7px}
-.plates.sm .tukplate{grid-column:1/-1;aspect-ratio:auto;min-height:120px;box-shadow:inset 0 0 0 3px #F2B930}
-.plates.sm .tukplate b{font-size:17px}.plates.sm .tukplate small{font-size:12px}
+.plates.sm .tukplate{box-shadow:inset 0 0 0 3px #F2B930}
 .plate.on{box-shadow:0 0 0 3px var(--saffron)}
 .plate.back{background:var(--paper);color:var(--ink);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
 .plate.back::after{display:none}
@@ -504,7 +503,7 @@ $('q').addEventListener('input', e => { S.q = e.target.value; if (S.q) S.country
     $('cityHead').textContent = S.country ? 'Где мы были: ' + S.country : 'Крупнейшие места по городам';
     const все = группы(S.country);
     const видимые = S.country ? все : все.slice(0, 12);
-    $('cityPlates').innerHTML = (S.country==='Таиланд' ? `<a class="plate tukplate" href="tuktuk/"><img loading="lazy" src="tuktuk/tuk.jpg" alt=""><span><b>🛺 Карта тук-туков Паттайи</b><small>маршруты и цены — открыть карту</small></span></a>` : '') + видимые.map(c => `<button class="plate${S.city===c.имя?' on':''}" data-g="${esc(c.имя)}" aria-pressed="${S.city===c.имя}"><img loading="lazy" src="${esc(фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
+    $('cityPlates').innerHTML = (S.country==='Таиланд' ? `<a class="plate tukplate" href="tuktuk/"><img loading="lazy" src="tuktuk/tuk.jpg" alt=""><span><b>🛺 Тук-туки Паттайи</b><small>карта маршрутов</small></span></a>` : '') + видимые.map(c => `<button class="plate${S.city===c.имя?' on':''}" data-g="${esc(c.имя)}" aria-pressed="${S.city===c.имя}"><img loading="lazy" src="${esc(фото(c.top))}" alt=""><span><b>${esc(c.имя)}</b><small>${c.n} мест</small></span></button>`).join('')
       + (S.country ? `<button class="plate back" data-c=""><span><b>← Все страны</b></span></button>` : '');
   }
   const обновить = () => { плашкиСтран(); плашкиГородов(); };
